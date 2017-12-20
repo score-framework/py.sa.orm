@@ -448,6 +448,8 @@ Mixin classes need to be registered via
 One mixin is provided by this module as reference, the :class:`QueryIdsMixin`.
 
 
+.. _sa_orm_relationship_helpers:
+
 Relationship Helpers
 --------------------
 
@@ -521,6 +523,10 @@ Helper Functions
 .. autofunction:: tbl2cls
 
 .. autofunction:: create_base
+
+.. autofunction:: create_relationship_class
+
+.. autofunction:: create_collection_class
 
 .. autoclass:: QueryIdsMixin
 
