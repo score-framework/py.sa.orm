@@ -1,6 +1,6 @@
 .. module:: score.sa.orm
-.. role:: faint
 .. role:: confkey
+.. role:: confdefault
 
 ************
 score.sa.orm
