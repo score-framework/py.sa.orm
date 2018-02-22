@@ -184,8 +184,12 @@ class ConfiguredSaOrmModule(ConfiguredModule):
             from zope.sqlalchemy import ZopeTransactionExtension
             zope_tx = ZopeTransactionExtension(
                 transaction_manager=ctx.tx_manager)
+            if self.db.ctx_member:
+                connection = self.db.get_connection(ctx)
+            else:
+                connection = self.db.engine.connect()
             session = self.Session(extension=zope_tx,
-                                   bind=self.db.get_connection(ctx))
+                                   bind=connection)
             self.__ctx_sessions[ctx] = session
             return session
 
