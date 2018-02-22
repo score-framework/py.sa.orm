@@ -87,6 +87,16 @@ def init(confdict, db, ctx=None):
     ctx_member = None
     if conf['ctx.member'] and conf['ctx.member'] != 'None':
         ctx_member = conf['ctx.member']
+    if ctx and ctx_member and db.ctx_transaction:
+        raise ConfigurationError(
+            'score.sa.orm',
+            'score.sa.db is configured to manage transactions in Context '
+            'objects. This feature conflicts with the zope transaction '
+            'extension used by this module (score.sa.orm). Until there is a '
+            'proper solution to this issue, you must either disable Context '
+            'transactions in score.sa.db (by setting ctx.transaction to '
+            '`False`) or disable ctx support for this module by setting '
+            'ctx.member to `None`.')
     if db.engine.dialect.name == 'sqlite':
         @sa.event.listens_for(db.engine, "connect")
         def set_sqlite_pragma(dbapi_connection, connection_record):
