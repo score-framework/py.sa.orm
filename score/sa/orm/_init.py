@@ -187,9 +187,8 @@ class ConfiguredSaOrmModule(ConfiguredModule):
             if self.db.ctx_member:
                 connection = self.db.get_connection(ctx)
             else:
-                connection = self.db.engine.connect()
-            session = self.Session(extension=zope_tx,
-                                   bind=connection)
+                connection = self.db.engine
+            session = self.Session(extension=zope_tx, bind=connection)
             self.__ctx_sessions[ctx] = session
             return session
 
