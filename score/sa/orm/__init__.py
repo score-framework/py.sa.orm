@@ -30,7 +30,7 @@ from ._session import QueryIdsMixin
 from .dataloader import load_data
 from .helpers import create_collection_class, create_relationship_class
 
-__version__ = '0.0.4'
+__version__ = '0.0.5'
 
 __all__ = ('create_base', 'init', 'ConfiguredSaOrmModule', 'cls2tbl', 'tbl2cls',
            'IdType', 'QueryIdsMixin', 'load_data', 'create_collection_class',
