@@ -245,10 +245,11 @@ class BaseMeta(DeclarativeMeta):
             # do not override explicitly defined id column
             return
         Base = cls.__score_sa_orm__['base']
-        args = [IdType]
+        args = [Base.__score_sa_orm__['id_type']]
         kwargs = {
             'primary_key': True,
             'nullable': False,
+            'unique': True,
         }
         for base in bases:
             if base != Base and issubclass(base, Base):
@@ -258,12 +259,13 @@ class BaseMeta(DeclarativeMeta):
         cls.id = attrs['id']
 
 
-def create_base():
+def create_base(*, id_type=IdType):
     """
     Returns a :ref:`base class <sa_orm_base_class>` for database access objects.
     """
     Base = declarative_base(metaclass=BaseMeta)
     Base.__score_sa_orm__ = {
+        'id_type': id_type,
         'base': Base,
     }
     return Base
