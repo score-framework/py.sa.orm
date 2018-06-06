@@ -241,6 +241,9 @@ class BaseMeta(DeclarativeMeta):
             return
         except (AttributeError, KeyError):
             pass
+        if 'id' in attrs:
+            # do not override explicitly defined id column
+            return
         Base = cls.__score_sa_orm__['base']
         args = [IdType]
         kwargs = {
