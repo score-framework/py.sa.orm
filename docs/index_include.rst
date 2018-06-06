@@ -114,6 +114,33 @@ Note that these are just *defaults*: You can still configure your ORM as if you
 weren't using this module at all.
 
 
+.. _sa_orm_custom_id_type:
+
+Custom ID type
+--------------
+
+The default invocation of :func:`create_base <score.sa.orm.create_base>` will
+generate a base class, that will add an ID column to your tables. The type of
+this ID column is a :ref:`flexible ID type <sa_orm_default_id_type>`, that
+prefers BIGINT columns, but falls back on INT if no such column is available.
+
+It is also possible to provide a custom type to use for ID columns:
+
+.. code-block:: python
+    :linenos:
+
+    import uuid
+    from score.sa.orm import create_base
+    from sqlalchemy.dialects.postgresql import UUID
+
+    Storable = create_base(id_type=UUID)
+
+    class User(Storable):
+        pass
+
+    user = User(id=str(uuid.uuid1()))
+
+
 Sqlalchemy Defaults
 -------------------
 
@@ -181,7 +208,7 @@ it manually:
         _type = Column(Enum('user', 'admin_user'), nullable=False)
 
 
-.. _sa_orm_id_type:
+.. _sa_orm_default_id_type:
 
 Flexible ID Type
 ----------------
