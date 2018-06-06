@@ -262,6 +262,9 @@ class BaseMeta(DeclarativeMeta):
 def create_base(*, id_type=IdType):
     """
     Returns a :ref:`base class <sa_orm_base_class>` for database access objects.
+
+    It is possible to define the type of auto-generated ID columns by passing an
+    sqlalchemy column type as *id_type*.
     """
     Base = declarative_base(metaclass=BaseMeta)
     Base.__score_sa_orm__ = {
