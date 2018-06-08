@@ -34,7 +34,7 @@ with open(os.path.join(here, 'README.rst')) as f:
 
 setup(
     name='score.sa.orm',
-    version='0.0.5',
+    version='0.0.6',
     description='ORM layer for The SCORE Framework',
     long_description=README,
     author='strg.at',
