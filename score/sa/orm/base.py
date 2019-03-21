@@ -253,7 +253,9 @@ class BaseMeta(DeclarativeMeta):
         }
         for base in bases:
             if base != Base and issubclass(base, Base):
-                args.append(sa.ForeignKey('%s.id' % base.__tablename__))
+                args.append(sa.ForeignKey('%s.id' % base.__tablename__,
+                                          ondelete='CASCADE',
+                                          onupdate='CASCADE'))
                 break
         attrs['id'] = sa.Column(*args, **kwargs)
         cls.id = attrs['id']
