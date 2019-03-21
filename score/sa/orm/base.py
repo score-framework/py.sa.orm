@@ -257,8 +257,7 @@ class BaseMeta(DeclarativeMeta):
                                           ondelete='CASCADE',
                                           onupdate='CASCADE'))
                 break
-        attrs['id'] = sa.Column(*args, **kwargs)
-        cls.id = attrs['id']
+        cls.id = attrs['id'] = sa.Column(*args, **kwargs)
 
 
 def create_base(*, id_type=IdType):
