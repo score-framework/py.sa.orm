@@ -22,7 +22,7 @@ def create_relationship_class(cls1, cls2, member, *, classname=None,
     following:
 
     >>> class UserGroup(Storable):
-    ...     __score_db__: {
+    ...     __score_sa_orm__: {
     ...         'inheritance': None
     ...     }
     ...     index = Column(Integer, nullable=False)
@@ -56,7 +56,7 @@ def create_relationship_class(cls1, cls2, member, *, classname=None,
     refcol1 = cls1.__tablename__[1:]
     refcol2 = cls2.__tablename__[1:]
     members = {
-        '__score_db__': {
+        '__score_sa_orm__': {
             'inheritance': None
         },
         idcol1: Column(
@@ -80,7 +80,7 @@ def create_relationship_class(cls1, cls2, member, *, classname=None,
         }
     if sorted:
         members['index'] = Column(Integer, nullable=False)
-    cls = type(classname, (cls1.__score_db__['base'],), members)
+    cls = type(classname, (cls1.__score_sa_orm__['base'],), members)
     if sorted:
         rel = relationship(cls2, secondary=cls.__tablename__,
                            order_by='%s.index' % cls.__name__,
@@ -122,7 +122,7 @@ def create_collection_class(owner, member, column, *,
     else:
         bref = backref(member + '_wrapper')
     members = {
-        '__score_db__': {
+        '__score_sa_orm__': {
             'inheritance': None
         },
         'owner_id': Column(IdType, ForeignKey('%s.id' % owner.__tablename__),
@@ -136,7 +136,7 @@ def create_collection_class(owner, member, column, *,
         members['__table_args__'] = (
             UniqueConstraint(members['owner_id'], column),
         )
-    cls = type(name, (owner.__score_db__['base'],), members)
+    cls = type(name, (owner.__score_sa_orm__['base'],), members)
     proxy = association_proxy(member + '_wrapper', 'value',
                               creator=lambda v: cls(value=v))
     setattr(owner, member, proxy)
