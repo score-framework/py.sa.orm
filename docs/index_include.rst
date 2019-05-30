@@ -218,18 +218,17 @@ tables. The primary reason for this feature is a work-around of a limitation of
 SQLite: it only supports Integer fields as auto-incrementing ids. All other
 databases use the much larger BigInteger.
 
-This means that the preferred way of referencing objets is the following:
+This means that the preferred way of referencing objects is the following:
 
 .. code-block:: python
-    :emphasize-lines: 8
 
     from score.sa.orm import IdType
     from sqlalchemy import Column
 
-    class User(Base):
+    class User(Storable):
         pass
 
-    class Article(Base):
+    class Article(Storable):
         author_id = Column(IdType, ForeignKey('_user.id'), nullable=False)
 
 
@@ -241,7 +240,7 @@ Inheritance
 Sqlalchemy_ supports various ways of configuring the inheritance in the
 database. The full list of options can be found in :ref:`sqlalchemy's
 documentation on inheritance mapping <sqlalchemy:inheritance_toplevel>`. But
-since we value programmer time over CPU time and want to avoid unnecessery
+since we value programmer time over CPU time and want to avoid unnecessary
 optimization attempts at the early stages of a project, we would rather
 recommend just using joined table inheritance at the beginning—which is also
 the default:
@@ -496,11 +495,11 @@ relationships, for example. That's why we provide our own:
     UserGroup = create_relationship_class(
         User, Group, 'groups', sorted=False, duplicates=False, backref='users')
 
-    user = User('Mousebender')
-    group = Group('Customer')
+    user = User(name='Mousebender')
+    group = Group(name='Customer')
     user.groups.append(group)
     session.flush()
-    # the database now contains an entry in the intermidiate table
+    # the database now contains an entry in the intermediate table
     # _user_group linking the objects.
 
 
