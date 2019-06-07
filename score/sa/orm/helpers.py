@@ -83,9 +83,8 @@ def create_relationship_class(cls1, cls2, member, *, classname=None,
     cls = type(classname, (cls1.__score_sa_orm__['base'],), members)
     if sorted:
         rel = relationship(cls2, secondary=cls.__tablename__,
-                           order_by='%s.index' % cls.__name__,
-                           remote_side=lambda: cls1.id,
-                           collection_class=ordering_list('index'))
+                           order_by='%s.index' % classname,
+                           remote_side=lambda: cls1.id)
     else:
         rel = relationship(cls2, secondary=cls.__tablename__,
                            remote_side=lambda: cls1.id)
