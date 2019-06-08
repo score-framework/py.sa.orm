@@ -54,6 +54,7 @@ def create_relationship_class(cls1, cls2, member, *, classname=None,
     Base = cls1.__score_sa_orm__['base']
     if Base != cls2.__score_sa_orm__['base']:
         raise ValueError('Provided classes have different base classes')
+    IdType = Base.__score_sa_orm__['id_type']
     idcol1 = cls1.__tablename__[1:] + '_id'
     idcol2 = cls2.__tablename__[1:] + '_id'
     refcol1 = cls1.__tablename__[1:]
@@ -117,6 +118,8 @@ def create_collection_class(owner, member, column, *,
     See :func:`.create_relationship_class` for the description of the keyword
     arguments.
     """
+    Base = cls1.__score_sa_orm__['base']
+    IdType = Base.__score_sa_orm__['id_type']
     name = owner.__name__ + tbl2cls(member)
     if sorted:
         bref = backref(member + '_wrapper', order_by='%s.index' % name,
