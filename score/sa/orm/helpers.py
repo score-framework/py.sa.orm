@@ -51,6 +51,9 @@ def create_relationship_class(cls1, cls2, member, *, classname=None,
     """
     if classname is None:
         classname = cls1.__name__ + cls2.__name__
+    Base = cls1.__score_sa_orm__['base']
+    if Base != cls2.__score_sa_orm__['base']:
+        raise ValueError('Provided classes have different base classes')
     idcol1 = cls1.__tablename__[1:] + '_id'
     idcol2 = cls2.__tablename__[1:] + '_id'
     refcol1 = cls1.__tablename__[1:]
