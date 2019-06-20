@@ -116,6 +116,7 @@ class ConfiguredSaOrmModule(ConfiguredModule):
     def __init__(self, db, ctx, Base, ctx_member, zope_transactions):
         super().__init__('score.sa.orm')
         self.db = db
+        self.ctx = ctx
         self.Base = Base
         self.ctx_member = ctx_member
         self.zope_transactions = zope_transactions
@@ -123,7 +124,9 @@ class ConfiguredSaOrmModule(ConfiguredModule):
         self.session_mixins = {QueryIdsMixin}
         self.__ctx_sessions = weakref.WeakKeyDictionary()
         if ctx and ctx_member:
-            ctx.register(ctx_member, self.get_session)
+            ctx.register(ctx_member,
+                         self._create_ctx_session,
+                         self._destroy_ctx_session)
 
     def add_session_mixin(self, mixin):
         """
@@ -174,16 +177,28 @@ class ConfiguredSaOrmModule(ConfiguredModule):
 
     def get_session(self, ctx):
         """
-        Provides a session instance, which is bound to the life-cycle of given
-        context object. Will always return the same session object for the same
-        input value.
+        Provides the session instance for give *ctx* object. The provided
+        Context object must be configured with the same
+        :class:`ConfiguredCtxModule <score.ctx.ConfiguredCtxModule>` as this
+        module.
+        """
+        if ctx._conf != self.ctx:
+            raise ValueError(
+                'Context object configured with different ConfiguredCtxModule')
+        if not self.ctx_member:
+            raise Exception('No ctx.member configuration')
+        return getattr(ctx, self.ctx_member)
+
+    def _create_ctx_session(self, ctx):
+        """
+        :term:`Context member <context member>` constructor.
         """
         try:
             return self.__ctx_sessions[ctx]
         except KeyError:
             from zope.sqlalchemy import ZopeTransactionExtension
             zope_tx = ZopeTransactionExtension(
-                transaction_manager=ctx.tx_manager)
+                transaction_manager=ctx.tx_manager, keep_session=True)
             if self.db.ctx_member:
                 connection = self.db.get_connection(ctx)
             else:
@@ -191,6 +206,12 @@ class ConfiguredSaOrmModule(ConfiguredModule):
             session = self.Session(extension=zope_tx, bind=connection)
             self.__ctx_sessions[ctx] = session
             return session
+
+    def _destroy_ctx_session(self, ctx, session, exception):
+        """
+        :term:`Context member <context member>` destructor.
+        """
+        session.close()
 
     def create(self):
         """
