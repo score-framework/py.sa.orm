@@ -171,10 +171,10 @@ class ConfiguredSaOrmModule(ConfiguredModule):
         kwargs = {
             'bind': self.db.engine,
         }
-        if self.zope_transactions:
-            from zope.sqlalchemy import ZopeTransactionExtension
-            kwargs['extension'] = ZopeTransactionExtension()
         self.Session = sessionmaker(self, **kwargs)
+        if self.zope_transactions:
+            from zope.sqlalchemy import register as register_zope_transaction
+            register_zope_transaction(self.Session)
 
     def get_session(self, ctx):
         """
@@ -197,14 +197,16 @@ class ConfiguredSaOrmModule(ConfiguredModule):
         try:
             return self.__ctx_sessions[ctx]
         except KeyError:
-            from zope.sqlalchemy import ZopeTransactionExtension
-            zope_tx = ZopeTransactionExtension(
-                transaction_manager=ctx.tx_manager, keep_session=True)
+            from zope.sqlalchemy import register as register_zope_transaction
             if self.db.ctx_member:
                 connection = self.db.get_connection(ctx)
             else:
                 connection = self.db.engine
-            session = self.Session(extension=zope_tx, bind=connection)
+            session = self.Session(bind=connection)
+            register_zope_transaction(
+                session,
+                transaction_manager=ctx.tx_manager,
+                keep_session=True)
             self.__ctx_sessions[ctx] = session
             return session
 
