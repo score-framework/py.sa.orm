@@ -25,8 +25,12 @@
 # the discretion of STRG.AT GmbH also the competent court, in whose district
 # the Licensee has his registered seat, an establishment or assets.
 
+import weakref
+
 from score.init import (
     ConfiguredModule, ConfigurationError, parse_dotted_path, parse_bool)
+import sqlalchemy as sa
+
 from ._session import sessionmaker, QueryIdsMixin
 from .base import BaseMeta
 from .triggers import CreateInheritanceTrigger, DropInheritanceTrigger
@@ -34,8 +38,6 @@ from .views import (
     generate_drop_inheritance_view_statement,
     generate_create_inheritance_view_statement,
 )
-import weakref
-import sqlalchemy as sa
 
 
 DEFAULTS = {
