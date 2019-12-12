@@ -126,7 +126,7 @@ class ConfiguredSaOrmModule(ConfiguredModule):
         if ctx and ctx_member:
             ctx.register(ctx_member,
                          self._create_ctx_session,
-                         self._destroy_ctx_session)
+                         destructor=self._destroy_ctx_session)
 
     def add_session_mixin(self, mixin):
         """
@@ -203,7 +203,7 @@ class ConfiguredSaOrmModule(ConfiguredModule):
         session = self.Session(bind=connection)
         register_zope_transaction(
             session,
-            transaction_manager=ctx.tx_manager,
+            transaction_manager=self.ctx.get_tx(ctx),
             keep_session=True)
         return session
 
