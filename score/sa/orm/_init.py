@@ -38,7 +38,7 @@ import weakref
 import sqlalchemy as sa
 
 
-defaults = {
+DEFAULTS = {
     'ctx.member': 'orm',
     'zope_transactions': False,
 }
@@ -72,7 +72,7 @@ def init(confdict, db, ctx=None):
             https://pypi.python.org/pypi/zope.sqlalchemy
 
     """
-    conf = defaults.copy()
+    conf = DEFAULTS.copy()
     conf.update(confdict)
     if not conf['base']:
         raise ConfigurationError('score.sa.orm', 'No base class configured')
