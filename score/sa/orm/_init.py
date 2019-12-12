@@ -164,7 +164,9 @@ class ConfiguredSaOrmModule(ConfiguredModule):
 
         This function must be called before this object is finalized.
         """
-        assert not self._finalized
+        if self._finalized:
+            raise Exception(
+                'Cannot add session mixin: module already finalized')
         self.session_mixins.add(mixin)
 
     def _finalize(self):
