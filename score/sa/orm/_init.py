@@ -187,7 +187,7 @@ class ConfiguredSaOrmModule(ConfiguredModule):
         :class:`ConfiguredCtxModule <score.ctx.ConfiguredCtxModule>` as this
         module.
         """
-        if ctx._conf != self.ctx:
+        if not isinstance(ctx, self.ctx.Context):
             raise ValueError(
                 'Context object configured with different ConfiguredCtxModule')
         if not self.ctx_member:
