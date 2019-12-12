@@ -25,8 +25,6 @@
 # the discretion of STRG.AT GmbH also the competent court, in whose district
 # the Licensee has his registered seat, an establishment or assets.
 
-import weakref
-
 from score.init import (
     ConfiguredModule, ConfigurationError, parse_dotted_path, parse_bool)
 import sqlalchemy as sa
@@ -125,7 +123,6 @@ class ConfiguredSaOrmModule(ConfiguredModule):
         self.zope_transactions = zope_transactions
         self.Session = None
         self.session_mixins = {QueryIdsMixin}
-        self.__ctx_sessions = weakref.WeakKeyDictionary()
         if ctx and ctx_member:
             ctx.register(ctx_member,
                          self._create_ctx_session,
@@ -198,21 +195,17 @@ class ConfiguredSaOrmModule(ConfiguredModule):
         """
         :term:`Context member <context member>` constructor.
         """
-        try:
-            return self.__ctx_sessions[ctx]
-        except KeyError:
-            from zope.sqlalchemy import register as register_zope_transaction
-            if self.db.ctx_member:
-                connection = self.db.get_connection(ctx)
-            else:
-                connection = self.db.engine
-            session = self.Session(bind=connection)
-            register_zope_transaction(
-                session,
-                transaction_manager=ctx.tx_manager,
-                keep_session=True)
-            self.__ctx_sessions[ctx] = session
-            return session
+        from zope.sqlalchemy import register as register_zope_transaction
+        if self.db.ctx_member:
+            connection = self.db.get_connection(ctx)
+        else:
+            connection = self.db.engine
+        session = self.Session(bind=connection)
+        register_zope_transaction(
+            session,
+            transaction_manager=ctx.tx_manager,
+            keep_session=True)
+        return session
 
     def _destroy_ctx_session(self, ctx, session, exception):
         """
