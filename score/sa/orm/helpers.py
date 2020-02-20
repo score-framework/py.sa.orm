@@ -25,7 +25,7 @@
 # the discretion of STRG.AT GmbH also the competent court, in whose district
 # the Licensee has his registered seat, an establishment or assets.
 
-from .base import IdType, tbl2cls
+from .base import tbl2cls
 from sqlalchemy import (
     Column, ForeignKey, Integer, UniqueConstraint)
 from sqlalchemy.orm import backref, relationship
