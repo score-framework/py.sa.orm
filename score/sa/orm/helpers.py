@@ -146,7 +146,7 @@ def create_collection_class(owner, member, column, *,
     See :func:`.create_relationship_class` for the description of the keyword
     arguments.
     """
-    Base = cls1.__score_sa_orm__['base']
+    Base = owner.__score_sa_orm__['base']
     IdType = Base.__score_sa_orm__['id_type']
     name = owner.__name__ + tbl2cls(member)
     if sorted:
