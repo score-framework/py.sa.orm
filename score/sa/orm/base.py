@@ -247,18 +247,13 @@ class BaseMeta(DeclarativeMeta):
             return
         Base = cls.__score_sa_orm__['base']
         args = [Base.__score_sa_orm__['id_type']]
-        kwargs = {
-            'primary_key': True,
-            'nullable': False,
-            'unique': True,
-        }
         for base in bases:
             if base != Base and issubclass(base, Base):
                 args.append(sa.ForeignKey('%s.id' % base.__tablename__,
                                           ondelete='CASCADE',
                                           onupdate='CASCADE'))
                 break
-        cls.id = attrs['id'] = sa.Column(*args, **kwargs)
+        cls.id = attrs['id'] = sa.Column(*args, primary_key=True)
 
 
 def create_base(*, id_type=IdType):
