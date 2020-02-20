@@ -136,8 +136,9 @@ def create_collection_class(owner, member, column, *,
     The given *owner* class will be updated to have a new *member* with given
     name, which is a list containing elements as described by *column*:
 
-    >>> create_collection_class(Group, 'permissions',
-    ...                         Column(PermissionEnum.db_type(), nullable=False)
+    >>> create_collection_class(
+    ...     Group, 'permissions',
+    ...     Column(PermissionEnum.db_type(), nullable=False)
 
     Group objects will now have a member called 'permissions', which contain a
     sorted list of PermissionEnum values.

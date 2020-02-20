@@ -56,8 +56,8 @@ class QueryIdsMixin:
             print(user)
 
         If *ignore_missing* evaluates to `False`, the function will raise an
-        :class:`IdsNotFound` exception if any of the ids were not present in the
-        database.
+        :class:`IdsNotFound` exception if any of the ids were not present in
+        the database.
 
         The main use case of this function is retrieval of objects, that were
         found through queries on external resources, such as full text indexing

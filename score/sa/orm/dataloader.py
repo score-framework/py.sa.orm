@@ -61,8 +61,8 @@ def load_data(thing, objects=None):
 
 def load_url(url, objects=None):
     """
-    Loads objects from a yaml resources under given *url*. See :func:`load_data`
-    for the description of the *objects* parameter.
+    Loads objects from a yaml resources under given *url*. See
+    :func:`load_data` for the description of the *objects* parameter.
     """
     return load_yaml(urllib.request.urlopen(url))
 
@@ -132,7 +132,8 @@ def _postprocess(data, objects=None):
                     proxy = proxies[classname][member]
                     col = proxy.attr[1].property.columns[0]
                     if isinstance(col.type, type(cls)):
-                        value = _replace_object(classes, objects, relcls, value)
+                        value = _replace_object(
+                            classes, objects, relcls, value)
                     else:
                         value = map(lambda v: _convert_value(v, col), value)
                 elif member in columns[classname]:
@@ -159,7 +160,8 @@ def _replace_object(classes, objects, cls, value):
 
 
 def _convert_value(value, column):
-    if isinstance(column.type, sa.DateTime) and not isinstance(value, datetime):
+    DateTime = sa.DateTime
+    if isinstance(column.type, DateTime) and not isinstance(value, datetime):
         return datetime(value)
     if isinstance(column.type, EnumType) and not isinstance(value, Enum):
         return column.type.enum(value.strip())

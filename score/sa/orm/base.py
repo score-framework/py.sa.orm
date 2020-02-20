@@ -46,7 +46,8 @@ def cls2tbl(cls):
     Converts a class (or a class name) to a table name. The class name is
     expected to be in *CamelCase*. The return value will be
     *seperated_by_underscores* and prefixed with an underscore. Omitting
-    the underscore will yield the name of the class's :ref:`view <sa_orm_view>`.
+    the underscore will yield the name of the class's :ref:`view
+    <sa_orm_view>`.
     """
     if isinstance(cls, type):
         cls = cls.__name__
@@ -152,11 +153,10 @@ class BaseMeta(DeclarativeMeta):
                     (parent.__name__, clsname(cls)))
         elif 'inheritance' not in cfg:
             cfg['inheritance'] = 'joined-table'
-        else:
-            if cfg['inheritance'] not in ('single-table', 'joined-table', None):
-                raise ConfigurationError(
-                    'Invalid inheritance configuration "%s" in class %s' %
-                    cfg['inheritance'], clsname(cls))
+        elif cfg['inheritance'] not in ('single-table', 'joined-table', None):
+            raise ConfigurationError(
+                'Invalid inheritance configuration "%s" in class %s' %
+                cfg['inheritance'], clsname(cls))
 
     def set_type_name_config(cls, classname, bases, attrs):
         cfg = cls.__score_sa_orm__
@@ -258,10 +258,11 @@ class BaseMeta(DeclarativeMeta):
 
 def create_base(*, id_type=IdType):
     """
-    Returns a :ref:`base class <sa_orm_base_class>` for database access objects.
+    Returns a :ref:`base class <sa_orm_base_class>` for database access
+    objects.
 
-    It is possible to define the type of auto-generated ID columns by passing an
-    sqlalchemy column type as *id_type*.
+    It is possible to define the type of auto-generated ID columns by passing
+    an sqlalchemy column type as *id_type*.
     """
     Base = declarative_base(metaclass=BaseMeta)
     Base.__score_sa_orm__ = {
