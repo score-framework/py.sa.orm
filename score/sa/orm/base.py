@@ -254,6 +254,10 @@ class BaseMeta(DeclarativeMeta):
                                           onupdate='CASCADE'))
                 break
         cls.id = attrs['id'] = sa.Column(*args, primary_key=True, unique=True)
+        if cls.__score_sa_orm__['inheritance'] == 'joined-table' and \
+                cls.__score_sa_orm__['parent'] is not None:
+            cls.__mapper_args__['inherit_condition'] = (
+                cls.id == cls.__score_sa_orm__['parent'].id)
 
 
 def create_base(*, id_type=IdType):
