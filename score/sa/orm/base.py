@@ -1,5 +1,5 @@
 # Copyright © 2015-2018 STRG.AT GmbH, Vienna, Austria
-# Copyright © 2019-2020 Necdet Can Ateşman, Vienna, Austria
+# Copyright © 2019-2023 Necdet Can Ateşman, Vienna, Austria
 #
 # This file is part of the The SCORE Framework.
 #
@@ -28,7 +28,10 @@
 import re
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.ext.declarative.api import DeclarativeMeta
+try:
+    from sqlalchemy.ext.declarative.api import DeclarativeMeta
+except ImportError:
+    from sqlalchemy.orm.decl_api import DeclarativeMeta
 
 
 IdType = sa.BigInteger()
