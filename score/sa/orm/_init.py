@@ -219,7 +219,7 @@ class ConfiguredSaOrmModule(ConfiguredModule):
         """
         # create all tables
         self.Base.metadata.create_all()
-        session = self.Session(extension=[])
+        session = self.Session()
         # generate inheritance views and triggers: we do this starting with the
         # base class and working our way down the inheritance hierarchy
         classes = [cls for cls in self.Base.__subclasses__()

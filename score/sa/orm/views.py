@@ -30,6 +30,9 @@ from sqlalchemy.ext.compiler import compiles
 
 
 class DropView(Executable, ClauseElement):
+
+    inherit_cache = True
+
     def __init__(self, name):
         self.name = name
 
@@ -41,6 +44,9 @@ def visit_drop_view(element, compiler, **kw):
 
 
 class CreateView(Executable, ClauseElement):
+
+    inherit_cache = True
+
     def __init__(self, name, select):
         self.name = name
         self.select = select

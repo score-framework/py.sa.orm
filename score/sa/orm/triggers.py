@@ -32,6 +32,8 @@ import textwrap
 
 class DropInheritanceTrigger(Executable, ClauseElement):
 
+    inherit_cache = True
+
     def __init__(self, table):
         self.table = table
 
@@ -49,6 +51,8 @@ def visit_drop_inheritance_trigger_postgresql(element, compiler, **kw):
 
 
 class CreateInheritanceTrigger(Executable, ClauseElement):
+
+    inherit_cache = True
 
     def __init__(self, table, parent):
         self.table = table
