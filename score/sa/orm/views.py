@@ -25,8 +25,21 @@
 # the discretion of STRG.AT GmbH also the competent court, in whose district
 # the Licensee has his registered seat, an establishment or assets.
 
+from sqlalchemy import __version__ as sqlalchemy_version
 from sqlalchemy.sql.expression import Executable, ClauseElement, select
 from sqlalchemy.ext.compiler import compiles
+
+
+# We need to use an older select() API when working with SqlAlchemy 1.3
+# or lower. We could use an external library to parse SqlAlchemy's version
+# string properly, but we don't want to add an unnecessary dependency for a
+# rather trivial operation like this.
+sqlalchemy_version_parts = sqlalchemy_version.split('.', maxsplit=2)
+sqlalchemy_major_version = int(sqlalchemy_version_parts[0])
+sqlalchemy_minor_version = int(sqlalchemy_version_parts[1])
+_USE_OLD_STYLE_SELECT = (
+    sqlalchemy_major_version < 1
+    or (sqlalchemy_major_version == 1 and sqlalchemy_minor_version < 4))
 
 
 class DropView(Executable, ClauseElement):
@@ -81,7 +94,11 @@ def generate_create_inheritance_view_statement(class_):
             add_cols(table)
             parent = parent.__score_sa_orm__['parent']
     if class_.__score_sa_orm__['inheritance'] != 'single-table':
-        viewselect = select(cols.values(), from_obj=tables)
+        if _USE_OLD_STYLE_SELECT:
+            viewselect = select(cols.values(), from_obj=tables)
+        else:
+            viewselect = select(*cols.values())\
+                .select_from(tables)
     else:
         typecol = getattr(
             class_, class_.__score_sa_orm__['type_column'])
@@ -93,9 +110,14 @@ def generate_create_inheritance_view_statement(class_):
                 add_typenames(subclass)
 
         add_typenames(class_)
-        viewselect = select(cols.values(),
-                            from_obj=class_.__table__,
-                            whereclause=typecol.in_(typenames))
+        if _USE_OLD_STYLE_SELECT:
+            viewselect = select(cols.values(),
+                                from_obj=class_.__table__,
+                                whereclause=typecol.in_(typenames))
+        else:
+            viewselect = select(*cols.values())\
+                .select_from(class_.__table__)\
+                .where(typecol.in_(typenames))
     return CreateView(viewname, viewselect)
 
 
