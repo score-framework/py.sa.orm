@@ -218,7 +218,7 @@ class ConfiguredSaOrmModule(ConfiguredModule):
         Generates all necessary tables, views, triggers, sequences, etc.
         """
         # create all tables
-        self.Base.metadata.create_all()
+        self.Base.metadata.create_all(self.db.engine)
         session = self.Session()
         # generate inheritance views and triggers: we do this starting with the
         # base class and working our way down the inheritance hierarchy
